@@ -533,6 +533,11 @@ bool FtraceConfigMuxer::SetupConfig(FtraceConfigId id,
       PERFETTO_PLOG("Failed to clear .../set_ftrace_filter");
       return false;
     }
+    if (!current_state_.funcgraph_on &&
+        !ftrace_->ClearFunctionNoTraceFilters()) {
+      PERFETTO_PLOG("Failed to clear .../set_ftrace_notrace");
+      return false;
+    }
     if (!current_state_.funcgraph_on && !ftrace_->ClearFunctionGraphFilters()) {
       PERFETTO_PLOG("Failed to clear .../set_graph_function");
       return false;
@@ -543,6 +548,11 @@ bool FtraceConfigMuxer::SetupConfig(FtraceConfigId id,
     }
     if (!ftrace_->AppendFunctionFilters(request.function_filters())) {
       PERFETTO_PLOG("Failed to append to .../set_ftrace_filter");
+      return false;
+    }
+    if (!ftrace_->AppendFunctionNoTraceFilters(
+            request.function_filter_notrace())) {
+      PERFETTO_PLOG("Failed to append to .../set_ftrace_notrace");
       return false;
     }
     if (!ftrace_->AppendFunctionGraphFilters(request.function_graph_roots())) {

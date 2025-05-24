@@ -261,6 +261,30 @@ bool FtraceProcfs::ClearFunctionFilters() {
   return ClearFile(path);
 }
 
+bool FtraceProcfs::AppendFunctionNoTraceFilters(
+    const std::vector<std::string>& filters) {
+  std::string path = root_ + "set_ftrace_notrace";
+  std::string filter = base::Join(filters, "\n");
+
+  // The same file accepts special actions to perform when a corresponding
+  // kernel function is hit (regardless of active tracer). For example
+  // "__schedule_bug:traceoff" would disable tracing once __schedule_bug is
+  // called.
+  // We disallow these commands as most of them break the isolation of
+  // concurrent ftrace data sources (as the underlying ftrace instance is
+  // shared).
+  if (base::Contains(filter, ':')) {
+    PERFETTO_ELOG("Filter commands are disallowed.");
+    return false;
+  }
+  return AppendToFile(path, filter);
+}
+
+bool FtraceProcfs::ClearFunctionNoTraceFilters() {
+  std::string path = root_ + "set_ftrace_notrace";
+  return ClearFile(path);
+}
+
 bool FtraceProcfs::SetMaxGraphDepth(uint32_t depth) {
   std::string path = root_ + "max_graph_depth";
   return WriteNumberToFile(path, depth);

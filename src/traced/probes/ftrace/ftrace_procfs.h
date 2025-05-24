@@ -89,6 +89,8 @@ class FtraceProcfs {
   bool ResetCurrentTracer();
   bool AppendFunctionFilters(const std::vector<std::string>& filters);
   bool ClearFunctionFilters();
+  bool AppendFunctionNoTraceFilters(const std::vector<std::string>& filters);
+  bool ClearFunctionNoTraceFilters();
   bool AppendFunctionGraphFilters(const std::vector<std::string>& filters);
   bool ClearFunctionGraphFilters();
   bool SetMaxGraphDepth(uint32_t depth);

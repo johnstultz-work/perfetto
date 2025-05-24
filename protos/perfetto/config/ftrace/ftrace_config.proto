@@ -18,7 +18,7 @@ syntax = "proto2";
 
 package perfetto.protos;
 
-// Next id: 34
+// Next id: 35
 message FtraceConfig {
   // Ftrace events to record, example: "sched/sched_switch".
   repeated string ftrace_events = 1;
@@ -277,4 +277,17 @@ message FtraceConfig {
   // Introduced in: perfetto v51.
   // Supported on: Android 25Q3+.
   optional uint32 function_graph_max_depth = 33;
+
+  // Negativly constrains the set of functions traced when
+  // |enable_function_graph| is true. Supports globs, e.g. "sched*".
+  // You can specify multiple filters, in which case all matching
+  // functions will NOT be traced. See kernel documentation on
+  // ftrace "set_ftrace_notrace" file for more details.
+  //
+  // Only respected for the first tracing session that enables
+  // function_graph tracing.
+  //
+  // Introduced in: perfetto v51.
+  // Supported on: Android 25Q3+.
+  repeated string function_filter_notrace = 34;
 }
